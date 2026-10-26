@@ -18,8 +18,8 @@ jobs:
       
       - name: Build and run Scala test container
         run: |
-          docker build -t scala-test:latest -f .github/Dockerfile.scala .
-          docker run --rm scala-test:latest /app/.github/test-scala.sh
+          docker build -t scala-test:latest -f jeff/scala/Dockerfile.scala .
+          docker run --rm scala-test:latest bash /app/jeff/scala/test-scala.sh
 
   test-mercury:
     name: Test Mercury Examples
@@ -31,8 +31,8 @@ jobs:
       
       - name: Build and run Mercury test container
         run: |
-          docker build -t mercury-test:latest -f .github/Dockerfile.mercury .
-          docker run --rm mercury-test:latest /app/.github/test-mercury.sh
+          docker build -t mercury-test:latest -f jeff/mercury/Dockerfile.mercury .
+          docker run --rm mercury-test:latest bash /app/jeff/mercury/test-mercury.sh
 
   verify-examples:
     name: Verify Example Files
@@ -45,14 +45,14 @@ jobs:
       - name: Check required files exist
         run: |
           echo "Checking Scala example files..."
-          test -f jeff/subprograms/scala_subprograms.scala || exit 1
-          test -f jeff/data_types_or_binding/scala_data_types_or_binding.scala || exit 1
-          test -f jeff/control_structures/scala_control_structures.scala || exit 1
+          test -f jeff/scala/scala_subprograms.scala || exit 1
+          test -f jeff/scala/scala_data_types_or_binding.scala || exit 1
+          test -f jeff/scala/scala_control_structures.scala || exit 1
           
           echo "Checking Mercury example files..."
-          test -f jeff/subprograms/mercury_subprograms.m || exit 1
-          test -f jeff/data_types_or_binding/mercury_data_types_or_binding.m || exit 1
-          test -f jeff/control_structures/mercury_control_structures.m || exit 1
+          test -f jeff/mercury/mercury_subprograms.m || exit 1
+          test -f jeff/mercury/mercury_data_types_or_binding.m || exit 1
+          test -f jeff/mercury/mercury_control_structures.m || exit 1
           
           echo "All required files exist!"
       

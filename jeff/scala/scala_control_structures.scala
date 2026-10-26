@@ -29,10 +29,10 @@ object ControlStructures {
   
   // For-loop with filter (for-comprehension)
   def evenNumbers(n: Int): List[Int] = {
-    for {
+    (for {
       i <- 1 to n
       if i % 2 == 0
-    } yield i
+    } yield i).toList
   }
   
   // Nested loops
