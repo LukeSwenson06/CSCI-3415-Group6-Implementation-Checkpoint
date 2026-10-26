@@ -1,0 +1,8 @@
+# Mercury Dockerfile - using glot/mercury base image
+FROM glot/mercury:latest
+
+WORKDIR /app
+
+COPY . .
+
+CMD ["bash", "test-mercury.sh"]
