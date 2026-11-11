@@ -1,157 +1,63 @@
 // Scala Control Structures Examples
-// Demonstrating if-else, loops, for-comprehensions, and exception handling
+// Demonstrating control flow constructs (If/Else, Match, For/While)
 
 object ControlStructures {
-  
-  // If-else expressions (if is an expression that returns a value)
-  def max(a: Int, b: Int): Int = {
-    if (a > b) a else b
-  }
-  
-  // Multi-line if-else with block
-  def minWithBlock(a: Int, b: Int): Int = {
-    val result = if (a < b) {
-      println("a is smaller")
-      a
-    } else {
-      b
-    }
-    result
-  }
-  
-  // For-loop with range
-  def printRange(n: Int): Unit = {
-    for (i <- 1 to n) {
-      print(s"$i ")
-    }
-    println()
-  }
-  
-  // For-loop with filter (for-comprehension)
-  def evenNumbers(n: Int): List[Int] = {
-    (for {
-      i <- 1 to n
-      if i % 2 == 0
-    } yield i).toList
-  }
-  
-  // Nested loops
-  def multiplicationTable(size: Int): Unit = {
-    for {
-      i <- 1 to size
-      j <- 1 to size
-    } println(s"$i × $j = ${i * j}")
-  }
-  
-  // While loop
-  def countdown(n: Int): Unit = {
-    var i = n
-    while (i > 0) {
-      print(s"$i ")
-      i -= 1
-    }
-    println("Blast off!")
-  }
-  
-  // Do-while loop
-  def doWhileExample(): Unit = {
-    var i = 0
-    do {
-      print(s"$i ")
-      i += 1
-    } while (i < 5)
-    println()
-  }
-  
-  // Match expression (Scala's switch on steroids)
-  def describeValue(x: Any): String = {
-    x match {
-      case 0 => "zero"
-      case 1 | 2 | 3 => "small number"
-      case n: Int if n > 3 => s"large integer: $n"
-      case s: String => s"string: $s"
-      case true => "boolean true"
-      case false => "boolean false"
-      case _: Double => "a double"
-      case _ => "unknown type"
-    }
-  }
-  
-  // Try-catch-finally
-  def safeDivide(a: Int, b: Int): Double = {
-    try {
-      a.toDouble / b
-    } catch {
-      case _: ArithmeticException => Double.NaN
-      case e: Exception => throw e
-    } finally {
-      println("Division attempted")
-    }
-  }
-  
-  // Pattern matching in for-comprehension
-  def filterPeople(people: List[(String, Int)]): List[String] = {
-    for {
-      (name, age) <- people
-      if age >= 18
-    } yield name
-  }
-  
-  // For-comprehension with multiple generators
-  def combinations(list1: List[Int], list2: List[String]): List[(Int, String)] = {
-    for {
-      num <- list1
-      str <- list2
-    } yield (num, str)
-  }
   
   def main(args: Array[String]): Unit = {
     println("=== Scala Control Structures Examples ===\n")
     
-    // If-else
-    println(s"max(5, 3) = ${max(5, 3)}")
-    println(s"minWithBlock(5, 3) = ${minWithBlock(5, 3)}")
-    
-    // For-loop
-    print("Range 1 to 5: ")
-    printRange(5)
-    
-    // For-comprehension with filter
-    println(s"Even numbers 1-10: ${evenNumbers(10).mkString(", ")}")
-    
-    // Multiplication table (first 3 rows)
-    println("Multiplication table (3x3):")
-    multiplicationTable(3)
-    println()
-    
-    // While loop
-    print("Countdown from 5: ")
-    countdown(5)
-    
-    // Do-while
-    print("Do-while 0-4: ")
-    doWhileExample()
-    
-    // Match expression
-    println(describeValue(0))
-    println(describeValue(2))
-    println(describeValue(100))
-    println(describeValue("hello"))
-    println(describeValue(true))
-    println(describeValue(3.14))
-    println(describeValue(List(1, 2, 3)))
-    
-    // Try-catch
-    println(s"safeDivide(10, 2) = ${safeDivide(10, 2)}")
-    println(s"safeDivide(10, 0) = ${safeDivide(10, 0)}")
-    
-    // Pattern matching in for-comprehension
-    val people = List(("Alice", 25), ("Bob", 17), ("Charlie", 30))
-    val adults = filterPeople(people)
-    println(s"Adults: ${adults.mkString(", ")}")
-    
-    // Combinations
-    val combos = combinations(List(1, 2), List("a", "b"))
-    println(s"Combinations: $combos")
+    // 1. If / Else (Basic Conditional Logic)
+    val locationRating: Double = 9.7 // Example variable to test logic flow
+
+    println("--- If/Else Demo ---")
+    if (locationRating >= 9.0) {
+        println(s"High rating ($locationRating): A must-visit location!")
+    } else if (locationRating >= 7.0) {
+        println(s"Medium rating ($locationRating): I'll consider it a place to visit.")
+    } else {
+        println("Low rating: Better luck next time.")
+    }
+
+    // 2. Matching with Guards and Matchers
+    println("\n--- Pattern Matching & Guards Demo ---")
+    val difficulty = 'A' match {
+      case 'A' => "Challenging"
+      case 'B' => "Moderate"
+      case 'C' => "Easy"
+      case c if c.isLetter && c.toUpper.isNaN => "Invalid Character" // Guard example
+      case _ => "Unknown Difficulty"
+    }
+    println(s"Adventure difficulty: $difficulty")
+
+    // 3. For loop (Iteration)
+    println("\n--- For Loop Demo ---")
+    val adventureDestinations: List[String] = List("Yosemite", "Niagara Falls", "Grand Canyon")
+    for (location <- adventureDestinations) {
+        println(s"Exploring $location.")
+    }
+
+    // 4. While loop (Iteration until condition fails)
+    println("\n--- While Loop Demo ---")
+    var days = 3
+    while (days > 0) {
+        println(s"$days day(s) left to go and having fun!")
+        days -= 1
+    }
+    println("Time to go home now.")
+
+    // 5. Try / Catch Demo (Fixing the floating point division issue)
+    println("\n--- Exception Handling Demo ---")
+    try {
+      // Integer division throws ArithmeticException when b == 0, which is what we want to catch here.
+      val result = 10 / 2 // This will successfully calculate
+      println(s"Successful division (10/2) = $result")
+
+      val zeroDivisionResult: Int = 10 / 0 // This WILL throw ArithmeticException
+    } catch {
+      case _: ArithmeticException => 
+        println("Caught an expected exception: Division by zero occurred.")
+    } finally {
+        println("Finally block always executes.")
+    }
   }
 }

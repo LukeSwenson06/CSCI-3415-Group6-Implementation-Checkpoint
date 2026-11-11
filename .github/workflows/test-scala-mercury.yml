@@ -16,6 +16,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Setup Scala Version Check (NEW)
+        run: |
+          echo "==============================="
+          echo "Scala Test Environment Details"
+          echo "==============================="
+          # This command checks the installed scala version
+          scala -version
+
       - name: Build and run Scala test container
         run: |
           docker build -t scala-test:latest -f jeff/scala/Dockerfile.scala .
@@ -29,6 +37,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Setup Mercury Version Check (NEW)
+        run: |
+          echo "==============================="
+          echo "Mercury Test Environment Details"
+          echo "==============================="
+          # This command checks the installed mercurylang version
+          mmc --version
+
       - name: Build and run Mercury test container
         run: |
           docker build -t mercury-test:latest -f jeff/mercury/Dockerfile.mercury .

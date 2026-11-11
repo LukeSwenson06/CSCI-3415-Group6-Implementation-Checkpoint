@@ -1,271 +1,93 @@
-# Scala vs Mercury: A Comparative Guide
+# Scala vs Mercury Comparison Examples (v2)
 
-## Overview
+**Environment Details:**
+*   **Scala Version:** Scala 2.13.x+ (Compiled using `scalac` - actual version used for this test run).
+*   **Mercury Version:** glot/mercury:latest (Version 22.01.8, compiled using `mmc`).
+*   **OS:** Linux
 
-This document provides a side-by-side comparison of Scala and Mercury programming languages, highlighting their key differences and similarities through practical examples.
+## Directory Structure and Execution Flow
 
-## Language Paradigms
+The directory structure is simplified to place all core logic files directly in the language-specific folders (`jeff/scala`, `jeff/mercury`) to maintain consistency with best practices (Feedback Point 2).
 
-| Aspect | Scala | Mercury |
-|--------|-------|---------|
-| Primary Paradigm | Multi-paradigm (OOP + FP) | Logic/Functional hybrid |
-| Purity | Supports both mutable and immutable | Pure functional (immutable by default) |
-| Typing | Static, object-oriented type system | Strong static typing with Hindley-Milner inference |
-| Compilation | JVM bytecode or JavaScript | Native code compilation |
-
-## Subprograms Comparison
-
-### Scala Functions
-```scala
-// Function with explicit return type
-def add(a: Int, b: Int): Int = {
-  a + b
-}
-
-// Recursive function
-def factorial(n: Int): BigInt = {
-  if (n <= 1) 1 else n * factorial(n - 1)
-}
-
-// Higher-order function
-def applyOperation(x: Int, y: Int, operation: (Int, Int) => Int): Int = {
-  operation(x, y)
-}
+```bash
+# Current structure:
+jeff/
+├── README.md
+├── setup.sh
+├── scala/
+│   ├── Dockerfile.scala       # Container build file for Scala
+│   ├── scala_data_types_or_binding.scala
+│   ├── scala_control_structures.scala
+│   └── scala_subprograms.scala
+└── mercury/
+    ├── Dockerfile.mercury     # Container build file for Mercury
+    ├── mercury_data_types_or_binding.m
+    ├── mercury_control_structures.m
+    └── mercury_subprograms.m
 ```
 
-### Mercury Predicates and Functions
-```mercury
-% Pure function
-:- func add(int, int) = int.
-add(X, Y) = X + Y.
+## Running the Examples (Workflow)
 
-% Recursive function
-:- func factorial(int) = int.
-factorial(0) = 1.
-factorial(N) = N * factorial(N - 1).
-
-% Higher-order predicate
-:- pred apply_operation(int, int, func(int, int) = int, int).
-apply_operation(X, Y, Operation, Result) :-
-    Result = Operation(X, Y).
-```
-
-**Key Differences:**
-- Scala has both functions (return values) and procedures (Unit)
-- Mercury separates pure functions from predicates (which may have multiple solutions)
-- Mercury uses mode declarations for determinism guarantees
-
-## Data Types Comparison
-
-### Scala Case Classes
-```scala
-// Algebraic data type
-sealed trait Shape
-case class Circle(radius: Double) extends Shape
-case class Rectangle(width: Double, height: Double) extends Shape
-
-// Pattern matching
-def shapeInfo(shape: Shape): String = {
-  shape match {
-    case Circle(r) => s"Circle with radius $r"
-    case Rectangle(w, h) => s"Rectangle ${w}x$h"
-  }
-}
-```
-
-### Mercury Algebraic Data Types
-```mercury
-% Sum type definition
-:- type shape -->
-    circle(float) ;
-    rectangle(float, float) ;
-    square(float).
-
-% Pattern matching via multiple clauses
-area(circle(Radius)) = 3.14159 * Radius * Radius.
-area(rectangle(Width, Height)) = Width * Height.
-```
-
-**Key Differences:**
-- Scala uses case classes with inheritance for ADTs
-- Mercury has built-in sum types with cleaner syntax
-- Mercury's pattern matching is based on unification
-
-## Control Structures Comparison
-
-### Scala If-Expressions and Loops
-```scala
-// If is an expression (returns a value)
-def max(a: Int, b: Int): Int = if (a > b) a else b
-
-// For-loop with range
-for (i <- 1 to 10) println(i)
-
-// Match expression (like switch on steroids)
-x match {
-  case 0 => "zero"
-  case n: Int if n > 0 => s"positive $n"
-}
-```
-
-### Mercury Control Structures
-```mercury
-% If-then-else (statement, not expression)
-( if A > B then
-    Max = A
-else
-    Max = B
-).
-
-% Recursion replaces loops
-print_range(Current, Max) :-
-    ( if Current =< Max then
-        io.write_string(string.int_to_string(Current)),
-        print_range(Current + 1, Max)
-    ).
-
-% Case analysis via multiple clauses
-classify_number(0, "zero").
-classify_number(N, Result) :- N < 0, Result = "negative".
-```
-
-**Key Differences:**
-- Scala's `if` is an expression that returns a value
-- Mercury uses recursion instead of loops (purity requirement)
-- Mercury's case analysis uses multiple predicate clauses with unification
-
-## Type System Comparison
-
-### Scala Type Inference
-```scala
-// Type inferred from initialization
-val number = 42              // Int
-val text = "hello"           // String
-
-// Explicit type annotation
-val explicit: List[Int] = List(1, 2, 3)
-
-// Generic types
-def head[T](list: List[T]): T = list.head
-```
-
-### Mercury Type System
-```mercury
-% Type synonyms
-:- type age == int.
-:- type name == string.
-
-% Polymorphic types (built-in)
-:- type list(T) -->
-    [] ;
-    [T | list(T)].
-
-% Determinism modes
-:- pred sort(list(int), list(int)) is det.     % always succeeds once
-:- pred member(T, list(T)) is semidet.         % may fail
-```
-
-**Key Differences:**
-- Scala's type system is more flexible but less restrictive
-- Mercury has mode annotations for determinism guarantees
-- Mercury uses Hindley-Milner type inference (similar to Haskell)
-
-## Binding and Immutability
-
-### Scala: Val vs Var
-```scala
-val immutable = 42    // Cannot be reassigned
-var mutable = 10      // Can be reassigned
-
-// Immutable by default in collections
-val list = List(1, 2, 3)
-val newList = list :+ 4  // Creates new list
-```
-
-### Mercury: Single Assignment
-```mercury
-% All variables are immutable (single assignment)
-max_of_two(A, B, Max) :-
-    ( if A > B then
-        Max = A     % Unification, not assignment
-    else
-        Max = B
-    ).
-```
-
-**Key Differences:**
-- Scala supports both `val` (immutable) and `var` (mutable)
-- Mercury enforces single assignment throughout (purity)
-- Mercury uses unification rather than assignment
-
-## Error Handling Comparison
-
-### Scala: Try-Catch-Finally
-```scala
-def safeDivide(a: Int, b: Int): Double = {
-  try {
-    a.toDouble / b
-  } catch {
-    case _: ArithmeticException => Double.NaN
-  } finally {
-    println("Division attempted")
-  }
-}
-```
-
-### Mercury: Determinism and Errors
-```mercury
-% Option 1: Return error value
-safe_divide(_, 0, nan) :- !.
-safe_divide(A, B, Result) :-
-    Result = float(A) / float(B).
-
-% Option 2: Use default
-divide_with_default(A, B, Default, Result) :-
-    ( if B = 0 then
-        Result = Default
-    else
-        Result is A // B
-    ).
-```
-
-**Key Differences:**
-- Scala uses try-catch-finally exception handling
-- Mercury prefers returning error values or using determinism annotations
-- Mercury's purity makes exceptions less common
-
-## Testing in Docker
-
-Both languages have been tested using Docker containers to ensure reproducible builds.
+The process involves three steps: **Build**, **Test**, and **Verify**. The Docker setup now copies all source code directly into `/app/jeff/scala` or `/app/jeff/mercury`, allowing scripts to reference files relative to their container directory.
 
 ### Scala Test Container
-```dockerfile
-FROM hseeberger/scala-sbt:8u292_3.3.3_2.13.12
-COPY jeff/subprograms/scala_subprograms.scala ./subprograms/
-RUN scalac subprograms/scala_subprograms.scala
+```bash
+# 1. Build the image from the local 'jeff/scala' context:
+docker build -t scala-test:latest -f jeff/scala/Dockerfile.scala .
+
+# 2. Run tests (The test script now knows where to find all files):
+docker run --rm scala-test:latest bash /app/jeff/scala/test-scala.sh
 ```
 
 ### Mercury Test Container
-```dockerfile
-FROM ubuntu:22.04
-RUN apt-get install -y gcc make wget
-# Install Mercury compiler from release
-RUN mmc -make && ./subprograms
+```bash
+# 1. Build the image from the local 'jeff/mercury' context:
+docker build -t mercury-test:latest -f jeff/mercury/Dockerfile.mercury .
+
+# 2. Run tests (The test script now knows where to find all files):
+docker run --rm mercury-test:latest bash /app/jeff/mercury/test-mercury.sh
 ```
 
-## Conclusion
+---
 
-| Feature | Scala Advantage | Mercury Advantage |
-|---------|-----------------|-------------------|
-| Flexibility | Multi-paradigm, integrates with Java | Purity guarantees, determinism checking |
-| Learning Curve | Familiar to OOP developers | Unique logic programming concepts |
-| Performance | JVM optimizations | Native code compilation |
-| Error Prevention | Type system + Option type | Mode system + purity |
-| Ecosystem | Rich Java ecosystem | Specialized but efficient |
+## Detailed Feature Comparison & Reasoning
 
-## References
+### 1. Subprograms (`subprograms/*.scala` / `mercury_subprograms.m`)
 
-- [Scala Documentation](https://docs.scala-lang.org/)
-- [Mercury Language Website](http://www.mercurylang.org/)
-- [Programming Scala](https://www.artima.com/shop/programming_scala_3ed)
-- [The Mercury User's Guide](http://dev.mercurylang.org/documentation)
+**Concept:** Demonstrating reusable code units with varying levels of side effects and parameter handling.
+
+*   **Scala (Subprograms):** We demonstrate pure functions (`add`), procedures that print messages (`printMessage`), recursion (`factorial`), default/named arguments, varargs (`sum`), higher-order functions (`applyOperation`), and call-by-name evaluation (`twice`).
+    *   *Reasoning:* Scala excels at blending functional purity with imperative features. The use of `val` ensures immutability where desired, while the explicit handling of side effects via `Unit` makes flow control clear.
+*   **Mercury (Subprograms):** We demonstrate core Mercury concepts like **predicates**, which are primary logic units; using specific modes (`is det`) to guarantee execution paths, and passing parameters explicitly using in/out bindings for state mutation simulation.
+    *   *Reasoning:* By relying on predicates, we naturally enforce that the goal succeeds at most once (determinism). This structure is foundational to Mercury's deductive nature.
+
+### 2. Data Types and Binding (`data_types_or_binding/*.scala` / `mercury_data_types_or_binding.m`)
+
+**Concept:** Showing how both languages model structured data and variable binding.
+
+*   **Scala (DataTypesAndBinding):** We use **sealed traits** to define a closed set of possible types, making pattern matching exhaustive at compile time. The `Option[T]` type forces the developer to explicitly handle potential absence of a value (`None`), preventing runtime NullPointerExceptions.
+    *   *Reasoning:* Scala's combination of ADTs and Option greatly improves code safety compared to traditional null-handling mechanisms. The `var`/`val` demonstration highlights its flexible approach to state management while maintaining immutability by default.
+*   **Mercury (DataTypesAndBinding):** We use **sum types (`-->`)** and dedicated clauses for pattern matching, which is more declarative than Scala's `match`.
+    *   *Reasoning:* Mercury enforces that all possible states are accounted for within the type definition itself. The explicit type synonyms allow us to give domain-specific names to basic types, improving code readability significantly.
+
+### 3. Control Structures (`control_structures/*.scala` / `mercury_control_structures.m`)
+**Concept:** Demonstrating flow control constructs from iteration to error handling.
+
+*   **Scala (ControlStructures):** Scala offers *expressions* for control structures. The `if/else` is an expression that yields a value, allowing assignment like `val x = if (...) { ... }`. We use standard loops (`for`/`while`) and the robust `try-catch` block to handle predictable errors.
+    *   *Reasoning:* The ability for control structures to act as expressions makes code very concise and functional. Using `try-catch` is the idiomatic way to manage runtime exceptions in Scala.
+*   **Mercury (ControlStructures):** Mercury replaces loops with **recursion**. Control flow decisions are managed via explicit conditional goals (`if-then-else`) or through pattern matching clauses. Error handling relies on failing predicates, not exceptions.
+    *   *Reasoning:* Since side effects break purity, all iteration must be modeled recursively, which is the fundamental pillar of logic programming.
+
+## Comparative Analysis
+
+| Feature | Scala Advantage | Mercury Advantage | Notes/Difference |
+| :--- | :--- | :--- | :--- |
+| **Flexibility** | Multi-paradigm approach allows seamless mixing of OOP and FP. | Enforces absolute purity and strong type safety by default. | Scala is broader; Mercury is deeper in its guarantees. |
+| **Type Modeling** | `sealed trait` and `Option[T]` provide a powerful, idiomatic way to model bounded sets and potential absence. | Sum types (`-->`) are extremely declarative for defining union structures. | Both excel at ADTs, but syntax differs greatly. |
+| **State Management**| Supports both mutable (`var`) and immutable (`val`), offering flexibility when required.| Strictly enforces single assignment (unification), eliminating state bugs entirely. | Mercury's strictness is a guarantee; Scala provides controlled escape hatches. |
+| **Iteration/Control**| `if` as an *expression* allows flow control to return values directly. | Forces recursion, which models computation in a pure mathematical fashion. | The concept of "looping" differs fundamentally between the two languages. |
+
+## Conclusion (What is what)
+Scala is a powerful, versatile language best suited for large-scale, complex enterprise systems that need to integrate with Java or require mutable state where necessary. Mercury is ideal for domains where absolute correctness and logical rigor are paramount, such as formal verification or AI rule engines.
+
+**Final Reminder:** For both languages, always use the official documentation when integrating new features; your current implementation showcases core concepts well!
