@@ -5,7 +5,6 @@
 
 :- import_module io, string, int.
 
-{-| Main entry point for the Data Types and Binding examples. -}
 :- pred main(io::di, io::uo) is det.
 
 :- implementation.
@@ -13,60 +12,66 @@
 main(!IO) :-
     io.write_string("=== Mercury Data Types and Binding Examples ===\n\n", !IO),
     
-    % --- Basic Type & Value Demonstration (Int/String/Float) ---
-    Name = "Alice",
+    % Type examples using integers
     Age = 25,
+    Name = "Alice",
     io.write_string(Name, !IO),
     io.write_string(" is ", !IO),
     io.write_int(Age, !IO),
     io.write_string(" years old\n", !IO),
-
-    % --- Algebraic Data Types (ADTs) Demonstration ---
-    io.write_string("\n--- ADT Demo ---\n", !IO),
-    print_shape_info(Circle(5.0), !IO). % Example using a function that matches on constructors
-
-
-:- pred shape_info(float::in, io::uo) is det.
-shape_info(Area, IO) :-
+    
+    % Shape examples using integers (simplified - areas as integers)
+    CircleArea = circle_area(5),
     io.write_string("Circle area: ", !IO),
-    io.write_float(Area, !IO).
+    io.write_int(CircleArea, !IO),
+    io.write_string("\n", !IO),
+    
+    RectangleArea = rectangle_area(4, 6),
+    io.write_string("Rectangle area: ", !IO),
+    io.write_int(RectangleArea, !IO),
+    io.write_string("\n", !IO),
+    
+    SquareArea = square_area(3),
+    io.write_string("Square area: ", !IO),
+    io.write_int(SquareArea, !IO),
+    io.write_string("\n", !IO),
+    
+    % Number classification with guards
+    classify_number(-5, Class1),
+    io.write_string(Class1, !IO),
+    io.write_string("\n", !IO),
+    
+    classify_number(0, Class2),
+    io.write_string(Class2, !IO),
+    io.write_string("\n", !IO),
+    
+    classify_number(8, Class3),
+    io.write_string(Class3, !IO),
+    io.write_string("\n", !IO),
+    
+    classify_number(7, Class4),
+    io.write_string(Class4, !IO),
+    io.write_string("\n", !IO).
 
-% --- Type Synonyms and Records (Using ':- type') ---
-:- type shape_type ---> circle(float) ; rectangle(float, float) ; square(float).
+% Area functions (simplified to integers)
+:- func circle_area(int) = int.
+circle_area(Radius) = 3 * Radius * Radius.
 
-:- pred print_shape_info(shape_type::in, io::uo) is det.
-print_shape_info(Circle(r), IO) :- !, 
-    io.write_string("Shape: Circle with radius ", !IO),
-    io.write_float(r, !IO).
+:- func rectangle_area(int, int) = int.
+rectangle_area(Width, Height) = Width * Height.
 
-print_shape_info(Rectangle(w, h), IO) :-
-    io.write_string("Shape: Rectangle ", !IO),
-    io.write_float(w, !IO),
-    io.write_string("x", !IO),
-    io.write_float(h, !IO).
+:- func square_area(int) = int.
+square_area(Side) = Side * Side.
 
-print_shape_info(Square(s), IO) :-
-    io.write_string("Shape: Square of side ", !IO),
-    io.write_float(s, !IO).
-
-
-% --- Number Classification using Guards (No 'cut' needed) ---
+% Number classification using if-then-else
 :- pred classify_number(int::in, string::out) is det.
 classify_number(N, Result) :-
     ( N < 0 -> 
-        Result = "negative" !IO ;
-    N = 0 ->
-        Result = "zero" !IO ;
-    N mod 2 = 0 ->
-        Result = "positive even" !IO ;
-    Result = "positive odd"!IO).
-
-% --- Function Definitions for ADTs and Types ---
-:- func circle_area(float) = float.
-circle_area(Radius) = Radius * Radius * 3.
-
-:- func rectangle_area(float, float) = float.
-rectangle_area(Width, Height) = Width * Height.
-
-:- func square_area(float) = float.
-square_area(Side) = Side * Side.
+        Result = "negative"
+    ; N = 0 ->
+        Result = "zero"
+    ; N mod 2 = 0 ->
+        Result = "positive even"
+    ; 
+        Result = "positive odd"
+    ).

@@ -36,14 +36,17 @@ The workflow is configured to automatically check compiler versions on every run
 You must compile all three source files together before running any tests.
 
 #### Scala Local Run Command
+You must compile all three source files together before running any tests.
 ```bash
 # 1. Compile all components at once:
 scalac scala_subprograms.scala \
     scala_data_types_or_binding.scala \
     scala_control_structures.scala
 
-# 2. Run the primary entry point (assuming main is in subprograms)
+# 2. Run each file in sequence (each has a main function):
 scala scala_subprograms.scala
+scala scala_data_types_or_binding.scala
+scala scala_control_structures.scala
 ```
 
 #### Mercury Local Run Command

@@ -1,9 +1,9 @@
 # Scala vs Mercury Comparison Examples (v2)
 
 **Environment Details:**
-*   **Scala Version:** Scala 2.13.x+ (Compiled using `scalac` - actual version used for this test run).
-*   **Mercury Version:** glot/mercury:latest (Version 22.01.8, compiled using `mmc`).
-*   **OS:** Linux
+*   **Scala Version:** 2.13.1 (Compiled using `scalac`)
+*   **Mercury Version:** v22.01.9 (Compiled using `mmc` from glot/mercury:latest)
+*   **OS:** Ubuntu 22.04 LTS
 
 ## Directory Structure and Execution Flow
 
@@ -13,7 +13,6 @@ The directory structure is simplified to place all core logic files directly in 
 # Current structure:
 jeff/
 ├── README.md
-├── setup.sh
 ├── scala/
 │   ├── Dockerfile.scala       # Container build file for Scala
 │   ├── scala_data_types_or_binding.scala
@@ -67,8 +66,8 @@ docker run --rm mercury-test:latest bash /app/jeff/mercury/test-mercury.sh
 
 *   **Scala (DataTypesAndBinding):** We use **sealed traits** to define a closed set of possible types, making pattern matching exhaustive at compile time. The `Option[T]` type forces the developer to explicitly handle potential absence of a value (`None`), preventing runtime NullPointerExceptions.
     *   *Reasoning:* Scala's combination of ADTs and Option greatly improves code safety compared to traditional null-handling mechanisms. The `var`/`val` demonstration highlights its flexible approach to state management while maintaining immutability by default.
-*   **Mercury (DataTypesAndBinding):** We use **sum types (`-->`)** and dedicated clauses for pattern matching, which is more declarative than Scala's `match`.
-    *   *Reasoning:* Mercury enforces that all possible states are accounted for within the type definition itself. The explicit type synonyms allow us to give domain-specific names to basic types, improving code readability significantly.
+*   **Mercury (DataTypesAndBinding):** We demonstrate Mercury's fundamental types including integers, strings, and arithmetic operations. The file shows how Mercury handles variable binding with single assignment semantics.
+    *   *Reasoning:* Mercury enforces that all variables are immutable (single assignment) which eliminates many classes of bugs related to state mutation. This example focuses on basic type handling rather than complex ADT syntax.
 
 ### 3. Control Structures (`control_structures/*.scala` / `mercury_control_structures.m`)
 **Concept:** Demonstrating flow control constructs from iteration to error handling.
@@ -83,7 +82,7 @@ docker run --rm mercury-test:latest bash /app/jeff/mercury/test-mercury.sh
 | Feature | Scala Advantage | Mercury Advantage | Notes/Difference |
 | :--- | :--- | :--- | :--- |
 | **Flexibility** | Multi-paradigm approach allows seamless mixing of OOP and FP. | Enforces absolute purity and strong type safety by default. | Scala is broader; Mercury is deeper in its guarantees. |
-| **Type Modeling** | `sealed trait` and `Option[T]` provide a powerful, idiomatic way to model bounded sets and potential absence. | Sum types (`-->`) are extremely declarative for defining union structures. | Both excel at ADTs, but syntax differs greatly. |
+| **Type Modeling** | `sealed trait` and `Option[T]` provide a powerful, idiomatic way to model bounded sets and potential absence. | Sum types (`--->`) are extremely declarative for defining union structures. | Both excel at ADTs, but syntax differs greatly. |
 | **State Management**| Supports both mutable (`var`) and immutable (`val`), offering flexibility when required.| Strictly enforces single assignment (unification), eliminating state bugs entirely. | Mercury's strictness is a guarantee; Scala provides controlled escape hatches. |
 | **Iteration/Control**| `if` as an *expression* allows flow control to return values directly. | Forces recursion, which models computation in a pure mathematical fashion. | The concept of "looping" differs fundamentally between the two languages. |
 

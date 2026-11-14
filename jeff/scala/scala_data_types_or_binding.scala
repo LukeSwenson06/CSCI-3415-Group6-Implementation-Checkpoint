@@ -37,7 +37,6 @@ object DataTypesAndBinding {
     
     // Reassigning 'var' is fine, but fails compilation for 'val'
     counter += 1 // OK
-    fixedValue = "Cannot reassign val!" // This line would cause a compile error, so it serves as a demonstration of immutability.
 
     // Demonstrating reassignment failure on val (commented out)
     // fixedValue = "Attempt to change val" // Compile Error: reassignment to val
@@ -131,7 +130,7 @@ object DataTypesAndBinding {
     // For-comprehension
     println("\nFor-comprehension:")
     val people = List(Person("Alice", 25), Person("Charlie", 35))
-    println(extractNames(people).mkstring(", "))
+    println(extractNames(people).mkString(", "))
 
     // Demonstrate var/val binding
     demonstrateVarVal()
