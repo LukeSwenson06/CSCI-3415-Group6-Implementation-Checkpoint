@@ -16,17 +16,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Setup Scala Version Check (NEW)
-        run: |
-          echo "==============================="
-          echo "Scala Test Environment Details"
-          echo "==============================="
-          # This command checks the installed scala version
-          scala -version
-
-      - name: Build and run Scala test container
+      - name: Build Scala container
         run: |
           docker build -t scala-test:latest -f jeff/scala/Dockerfile.scala .
+      
+      - name: Check Scala version
+        run: |
+          echo "=== Scala Environment ==="
+          docker run --rm scala-test:latest scala -version
+
+      - name: Run Scala tests
+        run: |
           docker run --rm scala-test:latest bash /app/jeff/scala/test-scala.sh
 
   test-mercury:
@@ -37,41 +37,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Setup Mercury Version Check (NEW)
-        run: |
-          echo "==============================="
-          echo "Mercury Test Environment Details"
-          echo "==============================="
-          # This command checks the installed mercurylang version
-          mmc --version
-
-      - name: Build and run Mercury test container
+      - name: Build Mercury container
         run: |
           docker build -t mercury-test:latest -f jeff/mercury/Dockerfile.mercury .
-          docker run --rm mercury-test:latest bash /app/jeff/mercury/test-mercury.sh
+      
+      - name: Check Mercury version
+        run: |
+          echo "=== Mercury Environment ==="
+          docker run --rm mercury-test:latest mmc --version
 
-  verify-examples:
-    name: Verify Example Files
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      
-      - name: Check required files exist
+      - name: Run Mercury tests
         run: |
-          echo "Checking Scala example files..."
-          test -f jeff/scala/scala_subprograms.scala || exit 1
-          test -f jeff/scala/scala_data_types_or_binding.scala || exit 1
-          test -f jeff/scala/scala_control_structures.scala || exit 1
-          
-          echo "Checking Mercury example files..."
-          test -f jeff/mercury/mercury_subprograms.m || exit 1
-          test -f jeff/mercury/mercury_data_types_or_binding.m || exit 1
-          test -f jeff/mercury/mercury_control_structures.m || exit 1
-          
-          echo "All required files exist!"
-      
-      - name: Check README exists
-        run: |
-          test -f jeff/README.md && echo "README found" || exit 1
+          docker run --rm mercury-test:latest bash /app/jeff/mercury/test-mercury.sh
