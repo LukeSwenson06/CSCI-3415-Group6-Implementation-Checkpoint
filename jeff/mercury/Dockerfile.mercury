@@ -5,4 +5,4 @@ WORKDIR /app
 
 COPY . .
 
-CMD ["bash", "test-mercury.sh"]
+CMD ["bash", "/app/jeff/mercury/test-mercury.sh"]
